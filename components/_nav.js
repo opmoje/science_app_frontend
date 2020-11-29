@@ -16,9 +16,9 @@ export default [
       },
       {
         _name: 'CSidebarNavItem',
-        name: 'Научные работы',
+        name: 'Научные труды',
         to: '/scientific-jobs',
-        icon: 'cil-spreadsheet',
+        icon: 'cil-book',
       },
       {
         _name: 'CSidebarNavItem',

@@ -11,20 +11,34 @@
 
             <CCardBody>
               <CInput
-                label="Название проекта"
+                label="Название проекта*:"
                 description="Чем более развернутее будет название, тем легче мы сможем подобрать подходящих исполнителей для научного проекта."
                 type="text"
+                v-model="name"
+                required
               />
-              <CSelect
-                label="Тип научного проекта"
-                :options="project.types"
-                placeholder="Выберите из списка"
+              <CTextarea
+                label="Описание проекта*:"
+                description="Достаточно 4-5 предложений."
+                rows="5"
+                v-model="description"
+                required
               />
+              <div role="group" class="form-group">
+                <label>Тип научного проекта*:</label>
+                <v-select
+                  :options="project.types"
+                  v-model="projectType"
+                  placeholder="Выберите из списка"
+                >
+                </v-select>
+              </div>
+              {{hardSkills}}
               <div role="group" class="form-group">
                 <label>Необходимые навыки, один или несколько</label>
                 <v-select
-                  :options="project.types"
-                  taggable
+                  :options="project.skills"
+                  v-model="hardSkills"
                   multiple
                   placeholder="Выберите навык из списка или введите свой и нажмите Enter"
                 >
@@ -33,32 +47,60 @@
               <CRow>
                 <CCol lg="6">
                   <CInput
-                    label="Дата начала проекта"
+                    label="Дата начала проекта*:"
+                    v-model="dateFrom"
                     type="date"
-
+                    required="required"
                   />
                 </CCol>
                 <CCol lg="6">
                   <CInput
-                    label="Дата окончания проекта"
+                    label="Дата окончания проекта*:"
+                    v-model="dateTo"
                     type="date"
+                    required="required"
                   />
                 </CCol>
               </CRow>
-              <CInput
-                label="Объем бюджетных средств, в рублях"
-                append="Руб"
-                description="Укажите необходимый бюджет под научный проект"
-              />
-              <CRow form class="form-group">
-                  <CInputRadioGroup
-                    :options="project.public"
-                    :checked="1"
-                    :inline="true"
+              <CRow>
+                <CCol lg="6">
+                  <CInput
+                    label="Объем бюджетных средств, в рублях"
+                    v-model="budget"
+                    append="Руб"
+                    description="Укажите необходимый бюджет под научный проект"
                   />
+                </CCol>
+                <CCol lg="6">
+                  <CInput
+                    v-model="budgetSource"
+                    label="Источник финансирования"
+                    description="Укажите название источника финансирования"
+                  />
+                </CCol>
+              </CRow>
+              <CRow form class="form-group">
+                <CInputRadioGroup
+                  v-model="isPublic"
+                  :options="project.public"
+                  :checked="isPublic"
+                  :inline="true"
+                />
               </CRow>
               <div class="form-actions">
-                <CButton type="submit" color="primary">Добавить</CButton>
+                <CAlert show color="danger" v-if="error">{{ error }}</CAlert>
+                <CButton
+                  @click="submitForm"
+                  color="primary"
+                  :disabled="sending"
+                >
+                  <template v-if="!sending">
+                    Добавить
+                  </template>
+                  <template v-else>
+                    Отправляем...
+                  </template>
+                </CButton>
                 <CButton
                   @click="$router.go(-1)"
                   color="secondary"
@@ -80,56 +122,165 @@
   export default {
     data: function () {
       return {
+        name: 'A look inside the black box: Using graph-theoretical descriptors to interpret a Continuous-Filter Convolutional Neural Network (CF-CNN) trained on the global and local minimum energy structures of neutral water clusters',
+        description: 'We propose a Synthetic Coordinate Recommendation system using a user Training Error based Correction approach (SCoR-UTEC). Synthetic Euclidean coordinates are assigned by SCoR system to users and items, so that, when the system converges, the distance between a user and an item provides an accurate prediction of the user\'s preference for that item. In this paper, after the SCoR execution, we introduce a stage called UTEC to correct the SCoR recommendations taking into account the error on the training set between users and items and their proximity in the synthetic Euclidean space of SCoR. UTEC is also applicable on any model-based recommender system with positive training error like SCoR. The experimental results demonstrate the efficiency and high performance of the proposed second stage on real world datasets. © 2020 ACM.',
+        projectType: null,
+        hardSkills: [],
+        dateFrom: null,
+        dateTo: null,
+        budget: 1000000,
+        budgetSource: 'Государственный фонд',
+        isPublic: "1",
+        sending: false,
+        error: '',
         project: {
           types: [
             {
-              value: 'RESEARCH',
-              label: 'Исследование'
+              value: 'Article',
+              label: 'Статья'
             },
             {
-              value: 'HYPOTHESIS_TEST',
-              label: 'Проверка гипотезы'
+              value: 'Book',
+              label: 'Книга'
             },
             {
-              value: 'DISSERTATION',
-              label: 'Диссертация'
+              value: 'Conference',
+              label: 'Конференция'
             },
             {
-              value: 'GRANT_MONETIZED',
-              label: 'Грантовая работа'
+              value: 'Editorial',
+              label: 'Редакционная статья'
             },
             {
-              value: 'GRANT_MONETIZED_PERSPECTIVE',
-              label: 'Проект, под который хотим подать заявку под грант'
-            }
-          ],
-          sciences: [
-            {
-              value: 1,
-              label: 'Математика'
+              value: 'Letter',
+              label: 'Рукопись'
             },
             {
-              value: 2,
-              label: 'Физика'
+              value: 'Note',
+              label: 'Заметки'
             },
             {
-              value: 3,
-              label: 'Информатика'
+              value: 'Review',
+              label: 'Обзор'
             }
           ],
           public: [
             {
-              value: 1,
+              value: "1",
               label: 'Проект виден всем'
             },
             {
-              value: 0,
+              value: "0",
               label: 'Проект видите только Вы'
+            }
+          ],
+          skills: [
+            {
+              value: '/api/skill_hards/1',
+              label: 'Математика'
+            },
+            {
+              value: '/api/skill_hards/2',
+              label: 'Дискретная математика'
+            },
+            {
+              value: '/api/skill_hards/3',
+              label: 'Механика'
+            },
+            {
+              value: '/api/skill_hards/4',
+              label: 'Астрономия'
+            },
+            {
+              value: '/api/skill_hards/5',
+              label: 'Физика'
+            },
+            {
+              value: '/api/skill_hards/6',
+              label: 'Радиофизика'
+            },
+            {
+              value: '/api/skill_hards/7',
+              label: 'Оптика'
+            },
+            {
+              value: '/api/skill_hards/8',
+              label: 'Квантовая физика'
+            },
+            {
+              value: '/api/skill_hards/9',
+              label: 'Неорганическая химия'
+            },
+            {
+              value: '/api/skill_hards/10',
+              label: 'Электрохимия'
+            },
+            {
+              value: '/api/skill_hards/11',
+              label: 'Химия высоких энергий'
             }
           ]
         }
       }
     },
-    methods: {}
+    methods: {
+      async submitForm() {
+        this.error = ''
+
+        if (
+          !this.name
+          || !this.description
+          || !this.projectType
+          || !this.dateFrom
+          || !this.dateTo
+        ) {
+          this.error = 'Заполните все поля со звездочкой*'
+          return false;
+        }
+
+        let hardSkills = [];
+
+        if (this.hardSkills.length) {
+          for (var key in this.hardSkills) {
+            if (this.hardSkills.hasOwnProperty(key)) {
+              hardSkills.push(this.hardSkills[key].value)
+            }
+          }
+        }
+
+        const scientificProject = {
+          name: this.name,
+          description: this.description,
+          type: this.projectType.value,
+          neededHardSkills: hardSkills,
+          dateFrom: this.dateFrom,
+          dateTo: this.dateTo,
+          public: this.isPublic === "1",
+          budget: this.budget,
+          budgetSource: this.budgetSource,
+          //TODO: user from store
+          user: '/api/users/10895'
+        }
+
+        this.sending = true
+
+        this.$api.scientificProjects.create(scientificProject)
+          .then(() => {
+            this.sending = false
+            this.$router.push({name: 'scientific-projects'})
+          })
+          .catch((err) => {
+            this.sending = false
+
+            if (err.response) {
+              switch (err.response.status) {
+                case 400:
+                  alert("Ошибка отправки, в форме допущены ошибки")
+                  break
+              }
+            }
+          })
+      }
+    }
   }
 </script>

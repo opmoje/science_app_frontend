@@ -5,7 +5,7 @@
         <CCard>
           <CCardHeader>
             <slot name="header">
-              <CIcon name="cil-spreadsheet"/>
+              <CIcon name="cil-book"/>
               <strong>
                 Научные работы
                 <span v-if="total">({{total}} шт)</span>

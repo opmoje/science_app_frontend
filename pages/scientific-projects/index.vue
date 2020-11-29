@@ -45,9 +45,6 @@
                   <div>Окончание</div>
                 </th>
                 <th class="" style="vertical-align: middle; overflow: hidden;">
-                  <div>Мест</div>
-                </th>
-                <th class="" style="vertical-align: middle; overflow: hidden;">
                   <div>Необходимые навыки</div>
                 </th>
                 <th class="" style="vertical-align: middle; overflow: hidden;">
@@ -61,7 +58,9 @@
                 :key="item.id"
               >
                 <td>
-                  {{ item.name }}
+                  <router-link :to="{name: 'scientific-projects-id', params: {id: item.id}}">
+                    {{ item.name }}
+                  </router-link>
                 </td>
                 <td>
                   <div>
@@ -92,16 +91,13 @@
                   </div>
                 </td>
                 <td>
-                  {{ item.participantsCountNeeded }} из {{ item.participantsCountNeeded }}
-                </td>
-                <td>
                   <template v-if="item.neededHardSkills && item.neededHardSkills.length">
                     <span
                       v-for="(skill, index) in item.neededHardSkills"
                       :key="skill.id"
                     >
                       <span v-if="index > 0"> </span>
-                      <CBadge color="primary">{{ skill.name }}</CBadge>
+                      <CBadge color="info">{{ skill.name }}</CBadge>
                     </span>
                   </template>
                   <template v-else>

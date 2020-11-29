@@ -2,47 +2,45 @@
   <div>
     <CRow>
       <CCol lg="12">
-        <transition name="fade">
-          <CCard>
-            <CCardHeader>
-              <CIcon name="cil-education"/>
-              Поиск исследователей
-            </CCardHeader>
+        <CCard>
+          <CCardHeader>
+            <CIcon name="cil-education"/>
+            Поиск исследователей
+          </CCardHeader>
 
-            <CCardBody>
-              <div role="group" class="form-group">
-                <label>Научные интересы</label>
-                <v-select
-                  :options="project.list1"
-                  taggable
-                  multiple
-                  placeholder="Выберите один или несколько интересов из списка, либо введите свой вариант и нажмите Enter"
-                >
-                </v-select>
-              </div>
-              <div role="group" class="form-group">
-                <label>Необходимые навыки, один или несколько</label>
-                <v-select
-                  :options="project.list2"
-                  taggable
-                  multiple
-                  placeholder="Выберите один или несколько навыков из списка, либо введите свой вариант и нажмите Enter"
-                >
-                </v-select>
-              </div>
+          <CCardBody>
+            <div role="group" class="form-group">
+              <label>Научные интересы</label>
+              <v-select
+                :options="project.list1"
+                taggable
+                multiple
+                placeholder="Выберите один или несколько интересов из списка, либо введите свой вариант и нажмите Enter"
+              >
+              </v-select>
+            </div>
+            <div role="group" class="form-group">
+              <label>Необходимые навыки, один или несколько</label>
+              <v-select
+                :options="project.list2"
+                taggable
+                multiple
+                placeholder="Выберите один или несколько навыков из списка, либо введите свой вариант и нажмите Enter"
+              >
+              </v-select>
+            </div>
 
-              <div class="form-actions">
-                <CButton type="submit" color="primary">Начать поиск</CButton>
-                <CButton
-                  @click="$router.go(-1)"
-                  color="secondary"
-                >
-                  Отмена
-                </CButton>
-              </div>
-            </CCardBody>
-          </CCard>
-        </transition>
+            <div class="form-actions">
+              <CButton type="submit" color="primary">Начать поиск</CButton>
+              <CButton
+                @click="$router.go(-1)"
+                color="secondary"
+              >
+                Отмена
+              </CButton>
+            </div>
+          </CCardBody>
+        </CCard>
       </CCol>
     </CRow>
   </div>
