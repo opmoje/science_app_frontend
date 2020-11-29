@@ -9,7 +9,7 @@
       <CHeaderNavLink>
         <div class="c-avatar">
           <img
-            src="img/avatars/default.jpg"
+            src="/img/avatars/default.jpg"
             class="c-avatar-img "
           />
         </div>
