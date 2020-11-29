@@ -33,7 +33,6 @@
                 >
                 </v-select>
               </div>
-              {{hardSkills}}
               <div role="group" class="form-group">
                 <label>Необходимые навыки, один или несколько</label>
                 <v-select
@@ -79,14 +78,6 @@
                   />
                 </CCol>
               </CRow>
-              <CRow form class="form-group">
-                <CInputRadioGroup
-                  v-model="isPublic"
-                  :options="project.public"
-                  :checked="isPublic"
-                  :inline="true"
-                />
-              </CRow>
               <div class="form-actions">
                 <CAlert show color="danger" v-if="error">{{ error }}</CAlert>
                 <CButton
@@ -130,7 +121,6 @@
         dateTo: null,
         budget: 1000000,
         budgetSource: 'Государственный фонд',
-        isPublic: "1",
         sending: false,
         error: '',
         project: {
@@ -255,7 +245,7 @@
           neededHardSkills: hardSkills,
           dateFrom: this.dateFrom,
           dateTo: this.dateTo,
-          public: this.isPublic === "1",
+          public: true,
           budget: this.budget,
           budgetSource: this.budgetSource,
           //TODO: user from store
@@ -265,9 +255,9 @@
         this.sending = true
 
         this.$api.scientificProjects.create(scientificProject)
-          .then(() => {
+          .then((res) => {
             this.sending = false
-            this.$router.push({name: 'scientific-projects'})
+            this.$router.push({name: 'scientific-projects-id', params: {id: res.id}})
           })
           .catch((err) => {
             this.sending = false

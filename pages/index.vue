@@ -3,22 +3,22 @@
     <CCardGroup columns class="card-columns cols-2">
       <CCard>
         <CCardBody style="max-width: 750px">
-          <img src="/img/Таблица1.png" width="100%">
+          <img src="/img/chart1.png" width="100%">
         </CCardBody>
       </CCard>
       <CCard>
         <CCardBody style="max-width: 750px">
-          <img src="/img/Таблица4.png" width="100%">
+          <img src="/img/chart4.png" width="100%">
         </CCardBody>
       </CCard>
       <CCard>
         <CCardBody style="max-width: 750px">
-          <img src="/img/Таблица3.png" width="100%">
+          <img src="/img/chart3.png" width="100%">
         </CCardBody>
       </CCard>
       <CCard>
         <CCardBody style="max-width: 750px">
-          <img src="/img/Таблица2.png" width="100%">
+          <img src="/img/chart2.png" width="100%">
         </CCardBody>
         <!--<CCardHeader>Обьем финансирования, тыс. руб.</CCardHeader>
         <CCardBody style="height: 644px">

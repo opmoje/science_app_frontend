@@ -5,16 +5,26 @@
         <CCard>
           <CCardHeader>
             <slot name="header">
-              <CIcon name="cil-book"/>
-              <strong>
-                Научные работы
-                <span v-if="total">({{total}} шт)</span>
-              </strong>
+              <CRow>
+                <CCol col="10">
+                  <CIcon name="cil-spreadsheet"/>
+                  <strong>
+                    Научные труды
+                    <span v-if="total">({{total}} шт)</span>
+                  </strong>
+                </CCol>
+                <CCol col="2" class="text-right">
+                  <CButtonGroup>
+                    <CButton color="secondary" size="sm" @click="$router.go(-1)">
+                      Назад
+                    </CButton>
+                  </CButtonGroup>
+                </CCol>
+              </CRow>
             </slot>
           </CCardHeader>
 
           <CCardBody>
-
             <table class="table table-hover">
               <thead>
               <tr>
@@ -106,9 +116,9 @@
   export default {
     components: {CTableWrapper, Pagination},
     async asyncData({$api, query}) {
-      const {page} = query
+      const {page, author} = query
 
-      return await $api.scientificJobs.findAll(page)
+      return await $api.scientificJobs.findAll(page, author)
         .then((response) => {
           return {
             items: response['hydra:member'],
@@ -126,6 +136,6 @@
 
       }
     },
-    watchQuery: ['page'],
+    watchQuery: ['page', 'author'],
   }
 </script>

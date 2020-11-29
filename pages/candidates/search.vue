@@ -10,22 +10,11 @@
 
           <CCardBody>
             <div role="group" class="form-group">
-              <label>Научные интересы</label>
-              <v-select
-                :options="project.list1"
-                taggable
-                multiple
-                placeholder="Выберите один или несколько интересов из списка, либо введите свой вариант и нажмите Enter"
-              >
-              </v-select>
-            </div>
-            <div role="group" class="form-group">
-              <label>Необходимые навыки, один или несколько</label>
+              <label>Ключевые слова исследовательской деятельности для поиска сотрудников</label>
               <v-select
                 :options="project.list2"
                 taggable
                 multiple
-                placeholder="Выберите один или несколько навыков из списка, либо введите свой вариант и нажмите Enter"
               >
               </v-select>
             </div>

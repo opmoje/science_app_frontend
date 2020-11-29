@@ -13,12 +13,17 @@
                     <span v-if="total">({{total}} шт)</span>
                   </strong>
                 </CCol>
-                <CCol col="2">
-                  <router-link :to="{name: 'scientific-projects-add'}">
-                    <CButton block color="primary" size="sm">
-                      + Добавить научный проект
+                <CCol col="2" class="text-right">
+                  <CButtonGroup>
+                    <router-link :to="{name: 'scientific-projects-add'}">
+                      <CButton color="primary" size="sm">
+                        + Добавить научный проект
+                      </CButton>
+                    </router-link>
+                    <CButton color="secondary" size="sm" @click="$router.go(-1)">
+                      Назад
                     </CButton>
-                  </router-link>
+                  </CButtonGroup>
                 </CCol>
               </CRow>
             </slot>

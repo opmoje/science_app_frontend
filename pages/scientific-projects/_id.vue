@@ -128,14 +128,24 @@
       </CCol>
     </CRow>
     <div class="h2" style="margin-bottom: 20px">
-      Рекомендованные исполнители:
+      <template v-if="item && item.recommendedUsers.length">
+        Рекомендованные исполнители:
+      </template>
+      <template v-else>
+        Рекомендации исполнители пока не найдены
+      </template>
     </div>
-    <CRow>
-      <CCol sm="6" md="4">
+    <CRow v-if="item && item.recommendedUsers.length">
+      <CCol
+        v-for="user in item.recommendedUsers"
+        :key="user.id"
+        sm="6"
+        md="4"
+      >
         <CCard>
           <CCardHeader>
             <CIcon name="cil-education"/>
-            <strong>Владислав</strong>
+            <strong>{{ user.displayName }}</strong>
             <CSwitch
               class="float-right"
               size="sm"
@@ -154,22 +164,53 @@
               <CListGroupItem
                 class="d-flex justify-content-between align-items-center"
               >
-
-                Научный сотрудник в
+                Научный сотрудник в {{ user.university.name }}
                 <CIcon name="cif-ru" height="25"/>
               </CListGroupItem>
               <CListGroupItem
                 class="d-flex justify-content-between align-items-center"
               >
                 Трудов опубликовано:
-                <CBadge color="primary" shape="pill">7</CBadge>
+                <CBadge color="primary" shape="pill">
+                  {{ user.scientificJobsTotal }}
+                  <router-link
+                    class="text-white"
+                    :to="{name: 'scientific-jobs', query: { author:user.id }}">
+                    (смотреть)
+                  </router-link>
+                </CBadge>
+              </CListGroupItem>
+
+              <CListGroupItem
+                v-if="user.contacts.phone"
+                class="d-flex justify-content-between align-items-center"
+              >
+                Телефон:
+                <CBadge color="secondary" shape="pill">{{ user.contacts.phone }}</CBadge>
               </CListGroupItem>
               <CListGroupItem
+                v-if="user.contacts.email"
                 class="d-flex justify-content-between align-items-center"
               >
                 Email:
-                <CBadge color="secondary" shape="pill">raytracer@yandex.ru</CBadge>
+                <CBadge color="secondary" shape="pill">{{ user.contacts.email }}</CBadge>
               </CListGroupItem>
+              <CListGroupItem
+                v-if="user.contacts.facebook"
+                class="d-flex justify-content-between align-items-center"
+              >
+                Facebook:
+                <CBadge color="secondary" shape="pill">{{ user.contacts.facebook }}</CBadge>
+              </CListGroupItem>
+              <CListGroupItem
+                v-if="user.contacts.vk"
+                class="d-flex justify-content-between align-items-center"
+              >
+                Vk.com:
+                <CBadge color="secondary" shape="pill">{{ user.contacts.vk }}</CBadge>
+              </CListGroupItem>
+
+
             </CListGroup>
           </CCardBody>
         </CCard>
@@ -197,6 +238,10 @@
     data: function () {
       return {}
     },
-    methods: {}
+    methods: {
+      randomValue() {
+        return Math.ceil(Math.random() * 10)
+      }
+    }
   }
 </script>
