@@ -2,6 +2,10 @@ export default {
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
   ssr: false,
 
+  env: {
+    baseUrl: process.env.BASE_URL || 'https://127.0.0.1:8000',
+  },
+
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
     title: 'science_app_frontend',
@@ -24,7 +28,9 @@ export default {
   plugins: [
     {src: '~plugins/core-ui', ssr: false},
     {src: '~plugins/core-ui-icons', ssr: false},
-    {src: '~plugins/v-select', ssr: false}
+    {src: '~plugins/v-select', ssr: false},
+    {src: '~plugins/api', ssr: false},
+    {src: '~plugins/common-methods', ssr: false},
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -42,7 +48,9 @@ export default {
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
-  axios: {},
+  axios: {
+    baseURL: process.env.BASE_URL || 'https://127.0.0.1:8000'
+  },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {

@@ -5,16 +5,18 @@
         <CCard>
           <CCardHeader>
             <slot name="header">
-
-              <CRow class="align-items-center">
+              <CRow>
                 <CCol col="10">
-                  <CIcon name="cil-grid"/>
-                  Научные проекты
+                  <CIcon name="cil-spreadsheet"/>
+                  <strong>
+                    Научные проекты
+                    <span v-if="total">({{total}} шт)</span>
+                  </strong>
                 </CCol>
                 <CCol col="2">
                   <router-link :to="{name: 'scientific-projects-add'}">
-                    <CButton block color="primary">
-                      Добавить научный проект
+                    <CButton block color="primary" size="sm">
+                      + Добавить научный проект
                     </CButton>
                   </router-link>
                 </CCol>
@@ -23,24 +25,114 @@
           </CCardHeader>
 
           <CCardBody>
-            <CDataTable
-              :hover="table.hover"
-              :striped="table.striped"
-              :bordered="table.bordered"
-              :small="table.small"
-              :fixed="table.fixed"
-              :items="table.items"
-              :fields="table.fields"
-              :items-per-page="table.small ? 10 : 5"
-              :dark="table.dark"
-              pagination
-            >
-              <template #status="{item}">
+
+            <table class="table table-hover">
+              <thead>
+              <tr>
+                <th>
+                  <div>Проект</div>
+                </th>
+                <th class="" style="vertical-align: middle; overflow: hidden;">
+                  <div>Научный руководитель</div>
+                </th>
+                <th class="" style="vertical-align: middle; overflow: hidden;">
+                  <div>Тип работы</div>
+                </th>
+                <th class="" style="vertical-align: middle; overflow: hidden;">
+                  <div>Начало</div>
+                </th>
+                <th class="" style="vertical-align: middle; overflow: hidden;">
+                  <div>Окончание</div>
+                </th>
+                <th class="" style="vertical-align: middle; overflow: hidden;">
+                  <div>Мест</div>
+                </th>
+                <th class="" style="vertical-align: middle; overflow: hidden;">
+                  <div>Необходимые навыки</div>
+                </th>
+                <th class="" style="vertical-align: middle; overflow: hidden;">
+                  <div>Бюджет</div>
+                </th>
+              </tr>
+              </thead>
+              <tbody class="position-relative">
+              <tr
+                v-for="item in items"
+                :key="item.id"
+              >
                 <td>
-                  <CBadge :color="getBadge(item.status)">{{item.status}}</CBadge>
+                  {{ item.name }}
                 </td>
-              </template>
-            </CDataTable>
+                <td>
+                  <div>
+                    <CIcon name="cif-ru" height="25"/>
+                    {{ item.user.displayName }}
+                  </div>
+                  <div class="small text-muted">
+                    Научный сотрудник в {{ item.user.university.name }}
+                  </div>
+                </td>
+                <td>
+                  <strong>
+                    {{ item.type }}
+                  </strong>
+                </td>
+                <td>
+                  <div class="clearfix">
+                      <span class="text-muted">
+                        {{ $formatDate(item.dateFrom) }}
+                      </span>
+                  </div>
+                </td>
+                <td>
+                  <div class="clearfix">
+                      <span class="text-muted">
+                        {{ $formatDate(item.dateTo) }}
+                      </span>
+                  </div>
+                </td>
+                <td>
+                  {{ item.participantsCountNeeded }} из {{ item.participantsCountNeeded }}
+                </td>
+                <td>
+                  <template v-if="item.neededHardSkills && item.neededHardSkills.length">
+                    <span
+                      v-for="(skill, index) in item.neededHardSkills"
+                      :key="skill.id"
+                    >
+                      <span v-if="index > 0"> </span>
+                      <CBadge color="primary">{{ skill.name }}</CBadge>
+                    </span>
+                  </template>
+                  <template v-else>
+                    Не указаны
+                  </template>
+                </td>
+                <td>
+                  <template v-if="item.budget && item.budget > 0">
+                    <div>
+                      {{ item.budget }} Руб.
+                    </div>
+                    <div class="small text-muted">
+                      <template v-if="item.budgetSource">
+                        {{ item.budgetSource }}
+                      </template>
+                      <template v-else>
+                        Источник неизвестен
+                      </template>
+                    </div>
+                  </template>
+                  <template v-else>
+                    Без финансирования
+                  </template>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+            <Pagination
+              :hydra-total-items="this.total"
+              :items-per-page="30"
+            />
           </CCardBody>
         </CCard>
       </CCol>
@@ -50,76 +142,29 @@
 
 <script>
   import CTableWrapper from '@/components/base/Table.vue'
+  import Pagination from '@/components/AppPagination'
 
   export default {
-    components: {CTableWrapper},
-    data: function () {
-      return {
-        table: {
-          items: [
-            {username: 'Samppa Nori', registered: '2012/01/01', role: 'Member', status: 'Active'},
-            {username: 'Estavan Lykos', registered: '2012/02/01', role: 'Staff', status: 'Banned'},
-            {username: 'Chetan Mohamed', registered: '2012/02/01', role: 'Admin', status: 'Inactive'},
-            {username: 'Derick Maximinus', registered: '2012/03/01', role: 'Member', status: 'Pending'},
-            {username: 'Friderik Dávid', registered: '2012/01/21', role: 'Staff', status: 'Active'},
-            {username: 'Yiorgos Avraamu', registered: '2012/01/01', role: 'Member', status: 'Active'},
-            {
-              username: 'Avram Tarasios',
-              registered: '2012/02/01',
-              role: 'Staff',
-              status: 'Banned',
-              _classes: 'table-success'
-            },
-            {username: 'Quintin Ed', registered: '2012/02/01', role: 'Admin', status: 'Inactive'},
-            {username: 'Enéas Kwadwo', registered: '2012/03/01', role: 'Member', status: 'Pending'},
-            {username: 'Agapetus Tadeáš', registered: '2012/01/21', role: 'Staff', status: 'Active'},
-            {
-              username: 'Carwyn Fachtna',
-              registered: '2012/01/01',
-              role: 'Member',
-              status: 'Active',
-              _classes: 'table-success'
-            },
-            {username: 'Nehemiah Tatius', registered: '2012/02/01', role: 'Staff', status: 'Banned'},
-            {username: 'Ebbe Gemariah', registered: '2012/02/01', role: 'Admin', status: 'Inactive'},
-            {username: 'Eustorgios Amulius', registered: '2012/03/01', role: 'Member', status: 'Pending'},
-            {username: 'Leopold Gáspár', registered: '2012/01/21', role: 'Staff', status: 'Active'},
-            {username: 'Pompeius René', registered: '2012/01/01', role: 'Member', status: 'Active'},
-            {username: 'Paĉjo Jadon', registered: '2012/02/01', role: 'Staff', status: 'Banned'},
-            {username: 'Micheal Mercurius', registered: '2012/02/01', role: 'Admin', status: 'Inactive'},
-            {username: 'Ganesha Dubhghall', registered: '2012/03/01', role: 'Member', status: 'Pending'},
-            {username: 'Hiroto Šimun', registered: '2012/01/21', role: 'Staff', status: 'Active'},
-            {username: 'Vishnu Serghei', registered: '2012/01/01', role: 'Member', status: 'Active'},
-            {username: 'Zbyněk Phoibos', registered: '2012/02/01', role: 'Staff', status: 'Banned'},
-            {
-              username: 'Einar Randall',
-              registered: '2012/02/01',
-              role: 'Admin',
-              status: 'Inactive',
-              _classes: 'table-danger'
-            },
-            {username: 'Félix Troels', registered: '2012/03/21', role: 'Staff', status: 'Active'},
-            {username: 'Aulus Agmundr', registered: '2012/01/01', role: 'Member', status: 'Pending'}
-          ],
-          fields: [
-            'Название', 'Предмет', 'Руководитель', 'Институт, факультет и кафедра', 'Дата начала', 'Дата окончания', 'статус'
-          ],
-          hover: true,
-          striped: true,
-          bordered: false,
-          small: true,
-          fixed: false,
-          dark: false
-        },
-      }
+    components: {CTableWrapper, Pagination},
+    async asyncData({$api, query}) {
+      const {page} = query
+
+      return await $api.scientificProjects.findAll(page)
+        .then((response) => {
+          return {
+            items: response['hydra:member'],
+            total: response['hydra:totalItems'],
+            pagination: response['hydra:view'],
+            perPage: 30,
+          };
+        })
+        .catch(() => {
+          // leave logic for global error handling for axios responses
+        })
     },
-    methods: {
-      getBadge(status) {
-        return status === 'Active' ? 'success'
-          : status === 'Inactive' ? 'secondary'
-            : status === 'Pending' ? 'warning'
-              : status === 'Banned' ? 'danger' : 'primary'
-      }
-    }
+    data: function () {
+      return {}
+    },
+    watchQuery: ['page'],
   }
 </script>
